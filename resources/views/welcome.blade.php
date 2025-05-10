@@ -197,6 +197,7 @@
             const currentModule = moduleIndex++;
 
             moduleDiv.innerHTML = `
+            <p>Module Create </p>
             <div>
               <input type="text" name="modules[${currentModule}][title]" placeholder="Module Title" required style="width: 50%; padding: 10px; margin-top: 10px;   margin-bottom: 10px; border-radius: 5px; background-color: #475569; color: white; border: none;">
           </div>
@@ -216,7 +217,7 @@
             const contentDiv = document.createElement('div');
             contentDiv.className = 'content';
             contentDiv.innerHTML = `
-            <h3> Content </h3>
+            <h3> Content Create</h3>
             <input type="text" name="modules[${moduleId}][contents][${contentIndex}][title]" placeholder="Content Title" required style="width: 50%; padding: 10px; margin-top: 10px; border-radius: 5px; background-color: #f7d9cd; color: white; border: none;">
 
             <select name="modules[${moduleId}][contents][${contentIndex}][video_type]" required>
@@ -225,8 +226,12 @@
                 <option value="vimeo">Vimeo</option>
                 <option value="upload">Direct Upload</option>
             </select>
-            <input type="text" name="modules[${moduleId}][contents][${contentIndex}][url]" placeholder="Video URL" required style="width: 40%; padding: 10px; margin-top: 10px; border-radius: 5px; background-color: #f7d9cd; color: white; border: none;">
-            <input type="text" name="modules[${moduleId}][contents][${contentIndex}][length]" placeholder="HH:MM:SS" required style="width: 40%; padding: 10px; margin-top: 10px; border-radius: 5px; background-color: #f7d9cd; color: white; border: none;">
+         
+            <input type="text" name="modules[${moduleId}][contents][${contentIndex}][url]" placeholder="Video URL" required style="width: 30%; padding: 10px; margin-top: 10px; border-radius: 5px; background-color: #f7d9cd; color: white; border: none;">
+            
+            
+            <input type="text" name="modules[${moduleId}][contents][${contentIndex}][length]" placeholder="HH:MM:SS" required style="width: 30%; padding: 10px; margin-top: 10px; border-radius: 5px; background-color: #f7d9cd; color: white; border: none;">
+
             <button class="button remove-button" type="button" onclick="this.parentElement.remove()">Remove Content</button>
         `;
 
