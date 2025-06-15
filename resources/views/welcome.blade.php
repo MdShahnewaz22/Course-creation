@@ -91,16 +91,13 @@
         input[type="text"] {
             margin-top: 10px;
         }
-
-        
-
     </style>
 </head>
 
 <body>
     <div class="container">
         <h2>Create a Course</h2>
-        <form id="courseForm">
+        <form id="courseForm" enctype="multipart/form-data">
             <div class="input-group">
                 <input type="text" name="title" placeholder="Course Title" required>
                 <input type="text" name="description" placeholder="Description" required>
@@ -110,11 +107,7 @@
                 <input type="text" name="level" placeholder="Level" required>
                 <input type="text" name="price" placeholder="Course Price" required>
             </div>
-           
-            {{-- 
-            <div class="input-group">
-                <input type="word-style" name="level" placeholder="Course Summary" class="word-style">
-            </div> --}}
+
 
             <div id="modules"></div>
             <button style="margin-top: 10px" type="button" class="button" onclick="addModule()">Add Module +</button>
@@ -130,6 +123,8 @@
 
         document.getElementById('courseForm').addEventListener('submit', function(e) {
             e.preventDefault();
+            //image
+            const formData = new FormData(this);
 
             const title = this.querySelector('[name="title"]').value;
             const description = this.querySelector('[name="description"]').value;
@@ -146,6 +141,12 @@
                 moduleDiv.querySelectorAll('.content').forEach((contentDiv, contentIdx) => {
                     const contentTitle = contentDiv.querySelector(
                         `[name="modules[${moduleIdx}][contents][${contentIdx}][title]"]`).value;
+
+                    const imageInput = contentDiv.querySelector(
+                        `[name="modules[${moduleIdx}][contents][${contentIdx}][image]"]`);
+                    const imageFile = imageInput.files[0];
+
+
                     const videoType = contentDiv.querySelector(
                             `[name="modules[${moduleIdx}][contents][${contentIdx}][video_type]"]`)
                         .value;
@@ -154,8 +155,11 @@
                     const length = contentDiv.querySelector(
                         `[name="modules[${moduleIdx}][contents][${contentIdx}][length]"]`).value;
 
+
+
                     contents.push({
                         title: contentTitle,
+                        image: imageInput,
                         video_type: videoType,
                         url,
                         length
@@ -170,20 +174,12 @@
 
             fetch('/courses', {
                     method: 'POST',
+                    body: formData, // এখানে JSON.stringify() নয়, সরাসরি formData পাঠাতে হবে
                     headers: {
-                        'Content-Type': 'application/json',
                         'Accept': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
                             'content')
-                    },
-                    body: JSON.stringify({
-                        title,
-                        description,
-                        category,
-                        level,
-                        price,
-                        modules
-                    })
+                    }
                 })
                 .then(res => res.json())
                 .then(data => {
@@ -195,7 +191,7 @@
                 })
                 .catch(err => {
                     alert('Error: ' + err.message);
-                    console.error(err);
+                    console.error(err)
                 });
         });
 
@@ -208,7 +204,7 @@
             moduleDiv.innerHTML = `
             <p>Module Create </p>
             <div>
-              <input type="text" name="modules[${currentModule}][title]" placeholder="Module Title" required style="width: 50%; padding: 10px; margin-top: 10px;   margin-bottom: 10px; border-radius: 5px; background-color: #475569; color: white; border: none;">
+              <input type="text" name="modules[${currentModule}][title]" placeholder="Module Title"  style="width: 50%; padding: 10px; margin-top: 10px;   margin-bottom: 10px; border-radius: 5px; background-color: #475569; color: white; border: none;">
           </div>
 
             <div class="contents" id="module-${currentModule}-contents"></div>
@@ -227,24 +223,55 @@
             contentDiv.className = 'content';
             contentDiv.innerHTML = `
             <h3> Content Create</h3>
-            <input type="text" name="modules[${moduleId}][contents][${contentIndex}][title]" placeholder="Content Title" required style="width: 50%; padding: 10px; margin-top: 10px; border-radius: 5px; background-color: #f7d9cd;  border: none;">
 
-            <select name="modules[${moduleId}][contents][${contentIndex}][video_type]" required>
+            <input type="text" name="modules[${moduleId}][contents][${contentIndex}][title]" placeholder="Content Title"  style="width: 40%; padding: 10px; margin-top: 10px; border-radius: 5px; background-color: #f7d9cd;  border: none;">
+
+            <input type="file" 
+                    name="modules[${moduleId}][contents][${contentIndex}][image]" 
+                    accept="image/*"
+                    onchange="previewImage(event, 'preview-${moduleId}-${contentIndex}')"
+                    style="width: 40%; padding: 10px; margin-top: 10px; border-radius: 5px; background-color: #f7d9cd; border: none;">
+
+                <!-- Preview Image Container -->
+                <img id="preview-${moduleId}-${contentIndex}" src="" alt="Image Preview" style="margin-top:10px; max-width: 200px; display: none; border-radius: 10px; align-items: right;">
+
+
+
+            <select name="modules[${moduleId}][contents][${contentIndex}][video_type]" >
                 <option value="">Choose...</option>
                 <option value="youtube">YouTube</option>
                 <option value="vimeo">Vimeo</option>
                 <option value="upload">Direct Upload</option>
             </select>
          
-            <input type="text" name="modules[${moduleId}][contents][${contentIndex}][url]" placeholder="Video URL" required style="width: 30%; padding: 10px; margin-top: 10px; border-radius: 5px; background-color: #f7d9cd; border: none;">
+            <input type="text" name="modules[${moduleId}][contents][${contentIndex}][url]" placeholder="Video URL"  style="width: 30%; padding: 10px; margin-top: 10px; border-radius: 5px; background-color: #f7d9cd; border: none;">
             
             
-            <input type="text" name="modules[${moduleId}][contents][${contentIndex}][length]" placeholder="HH:MM:SS" required style="width: 30%; padding: 10px; margin-top: 10px; border-radius: 5px; background-color: #f7d9cd; border: none;">
+            <input type="text" name="modules[${moduleId}][contents][${contentIndex}][length]" placeholder="HH:MM:SS"  style="width: 30%; padding: 10px; margin-top: 10px; border-radius: 5px; background-color: #f7d9cd; border: none;">
 
             <button class="button remove-button" type="button" onclick="this.parentElement.remove()">Remove Content</button>
         `;
 
             contentsDiv.appendChild(contentDiv);
+        }
+
+        function previewImage(event, previewId) {
+            const input = event.target;
+            const preview = document.getElementById(previewId);
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                preview.src = '';
+                preview.style.display = 'none';
+            }
         }
     </script>
 </body>
