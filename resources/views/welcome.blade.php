@@ -183,7 +183,7 @@
                 })
                 .then(res => res.json())
                 .then(data => {
-                    alert('Course saved!');
+                    alert('Your course has been saved successfully.');
                     console.log(data);
                     this.reset();
                     document.getElementById('modules').innerHTML = '';
@@ -223,34 +223,75 @@
             contentDiv.className = 'content';
             contentDiv.innerHTML = `
             <h3> Content Create</h3>
+                 <div style="display: flex; align-items: flex-start; gap: 20px; margin-bottom: 20px;">
 
-            <input type="text" name="modules[${moduleId}][contents][${contentIndex}][title]" placeholder="Content Title"  style="width: 40%; padding: 10px; margin-top: 10px; border-radius: 5px; background-color: #f7d9cd;  border: none;">
+                        <!-- Text Input Block -->
+                        <div>
+                            <p style="margin: 0;">Content Title</p>
+                            <input 
+                                type="text" 
+                                name="modules[${moduleId}][contents][${contentIndex}][title]" 
+                                placeholder="Content Title"
+                                style="width: 450px; padding: 10px; margin-top: 5px; border-radius: 5px; background-color: #f7d9cd; border: none;">
+                        </div>
 
-            <input type="file" 
-                    name="modules[${moduleId}][contents][${contentIndex}][image]" 
-                    accept="image/*"
-                    onchange="previewImage(event, 'preview-${moduleId}-${contentIndex}')"
-                    style="width: 40%; padding: 10px; margin-top: 10px; border-radius: 5px; background-color: #f7d9cd; border: none;">
+                        <!-- File Input Block -->
+                        <div>
+                            <p style="margin: 0;">Content Image</p>
+                            <input 
+                                type="file" 
+                                name="modules[${moduleId}][contents][${contentIndex}][image]" 
+                                accept="image/*"
+                                onchange="previewImage(event, 'preview-${moduleId}-${contentIndex}')"
+                                style="width: 450px; padding: 10px; margin-top: 5px; border-radius: 5px; background-color: #f7d9cd; border: none;">
+                            
+                            <img 
+                                id="preview-${moduleId}-${contentIndex}" 
+                                src="" 
+                                alt="Image Preview" 
+                                style="margin-top: 10px; max-width: 200px; display: none; border-radius: 10px;">
+                        </div>
+                    </div>
 
-                <!-- Preview Image Container -->
-                <img id="preview-${moduleId}-${contentIndex}" src="" alt="Image Preview" style="margin-top:10px; max-width: 200px; display: none; border-radius: 10px; align-items: right;">
 
+            <div>
+                <p style="margin: 0;">Video Source Type</p>
+                <div style="width: 960px;">
+                <select name="modules[${moduleId}][contents][${contentIndex}][video_type]" >
+                        <option value="">Choose...</option>
+                        <option value="youtube">YouTube</option>
+                        <option value="vimeo">Vimeo</option>
+                        <option value="upload">Direct Upload</option>
+                </select>    
+                 </div>
+            </div>
 
+            <div style="display: flex; align-items: flex-start; gap: 20px; margin-bottom: 20px; margin-top: 20px;">
 
-            <select name="modules[${moduleId}][contents][${contentIndex}][video_type]" >
-                <option value="">Choose...</option>
-                <option value="youtube">YouTube</option>
-                <option value="vimeo">Vimeo</option>
-                <option value="upload">Direct Upload</option>
-            </select>
-         
-            <input type="text" name="modules[${moduleId}][contents][${contentIndex}][url]" placeholder="Video URL"  style="width: 30%; padding: 10px; margin-top: 10px; border-radius: 5px; background-color: #f7d9cd; border: none;">
-            
-            
-            <input type="text" name="modules[${moduleId}][contents][${contentIndex}][length]" placeholder="HH:MM:SS"  style="width: 30%; padding: 10px; margin-top: 10px; border-radius: 5px; background-color: #f7d9cd; border: none;">
+                    <!-- Video URL -->
+                    <div>
+                        <p style="margin: 0;">Video URL</p>
+                        <input 
+                            type="text" 
+                            name="modules[${moduleId}][contents][${contentIndex}][url]" 
+                            placeholder="Video URL"
+                            style="width: 450px; padding: 10px; margin-top: 5px; border-radius: 5px; background-color: #f7d9cd; border: none;">
+                    </div>
+
+                    <!-- Video Length -->
+                    <div>
+                        <p style="margin: 0;">Video Length</p>
+                        <input 
+                            type="text" 
+                            name="modules[${moduleId}][contents][${contentIndex}][length]" 
+                            placeholder="HH:MM:SS"
+                            style="width: 450px; padding: 10px; margin-top: 5px; border-radius: 5px; background-color: #f7d9cd; border: none;">
+                    </div>
+
+                </div>
 
             <button class="button remove-button" type="button" onclick="this.parentElement.remove()">Remove Content</button>
-        `;
+            `;
 
             contentsDiv.appendChild(contentDiv);
         }
